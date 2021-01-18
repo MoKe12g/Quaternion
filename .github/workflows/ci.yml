@@ -61,9 +61,13 @@ jobs:
         version: ${{ matrix.qt-version }}
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
 
-    - name: Install Ninja and appstream-util (Linux)
+    - name: Install Ninja and other deps (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') }}
-      run: sudo apt-get -qq install ninja-build appstream-util
+      run: |
+        if [ "${{ matrix.distribute }}" == "appimage" ]; then
+          EXTRA_DEPS=libgstreamer-plugins-base1.0.0
+        fi
+        sudo apt-get -qq install ninja-build appstream-util $EXTRA_DEPS
 
     - name: Install Ninja (macOS)
       if: contains(matrix.os, 'macos')
@@ -130,4 +134,5 @@ jobs:
           wget -c -nv https://github.com/linuxdeploy/$f/releases/download/continuous/$f-x86_64.AppImage
           chmod +x $f-x86_64.AppImage
         done
-        LD_LIBRARY_PATH=$Qt5_DIR/lib QMAKE=$Qt5_DIR/bin/qmake ./linuxdeploy-x86_64.AppImage --appdir $DESTDIR --plugin qt --output AppImage
+        LD_LIBRARY_PATH=$Qt5_DIR/lib QMAKE=$Qt5_DIR/bin/qmake \
+            ./linuxdeploy-x86_64.AppImage --appdir $DESTDIR --plugin qt --output AppImage
