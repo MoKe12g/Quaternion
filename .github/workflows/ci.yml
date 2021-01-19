@@ -144,7 +144,7 @@ jobs:
         for f in linuxdeploy linuxdeploy-plugin-qt; do
             wget -c -nv --directory-prefix=linuxdeploy \
                 https://github.com/linuxdeploy/$f/releases/download/continuous/$f-x86_64.AppImage
-            chmod +x $f-x86_64.AppImage
+            chmod +x linuxdeploy/$f-x86_64.AppImage
         done
         LD_LIBRARY_PATH=$Qt5_DIR/lib QMAKE=$Qt5_DIR/bin/qmake \
             OUTPUT=package/quaternion-$VERSION.AppImage \
